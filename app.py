@@ -7,17 +7,21 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import argparse
 
 def download_image(url):
+    start_time = time.time()
     try:
         response = requests.get(url)
         response.raise_for_status()
         filename = os.path.basename(url)
         with open(filename, 'wb') as f:
             f.write(response.content)
-        return filename, time.time()
+        end_time = time.time()
+        return filename, end_time - start_time
     except Exception as e:
-        return str(e), time.time()
+        end_time = time.time()
+        return str(e), end_time - start_time
 
 async def async_download_image(url):
+    start_time = time.time()
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
@@ -26,9 +30,11 @@ async def async_download_image(url):
                 content = await response.read()
                 with open(filename, 'wb') as f:
                     f.write(content)
-                return filename, time.time()
+                end_time = time.time()
+                return filename, end_time - start_time
     except Exception as e:
-        return str(e), time.time()
+        end_time = time.time()
+        return str(e), end_time - start_time
 
 def threading_download(urls):
     start_time = time.time()
@@ -72,9 +78,9 @@ if __name__ == '__main__':
         results, total_time = download_methods[args.method](args.urls)
 
     for filename, download_time in results:
-        print(f"Downloaded {filename} at {download_time}")
+        print(f"Downloaded {filename} in {download_time:.2f} seconds")
 
-    print(f"Total time: {total_time}")
+    print(f"Total time: {total_time:.2f} seconds")
     
     # python app.py https://example.com/image1.jpg https://example.com/image2.jpg --method threading
     
