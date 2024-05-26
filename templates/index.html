@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Downloader</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+<body>
+    <h1>Image Downloader</h1>
+    <form action="{{ url_for('index') }}" method="post">
+        <label for="image_urls">Enter Image URLs (one per line):</label><br>
+        <textarea id="image_urls" name="image_urls" rows="5"></textarea><br>
+        <button type="submit">Download Images</button>
+    </form>
+
+    {% if total_time %}
+    <p>Images downloaded in {{ total_time|round(2) }} seconds</p>
+    {% endif %}
+
+    <h2>Uploaded Files</h2>
+    <ul>
+        {% for file in uploaded_files %}
+        <li>{{ file }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Upload New File</h2>
+    <form action="{{ url_for('uploads') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
